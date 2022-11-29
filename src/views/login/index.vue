@@ -1,11 +1,6 @@
 <template>
 	<div id="login">
-		<el-form
-			ref="loginForm"
-			class="login-form"
-			autocomplete="on"
-			label-position="left"
-		>
+		<el-form ref="loginForm" class="login-form" autocomplete="on" label-position="left">
 			<div class="title-container">
 				<h3 class="title">后台管理系统</h3>
 			</div>
@@ -14,61 +9,33 @@
 				<span class="icon-container">
 					<i class="iconfont icon-yonghu"></i>
 				</span>
-				<el-input
-					ref="username"
-					v-model="loginForm.username"
-					placeholder="请输入用户名"
-					name="username"
-					type="text"
-					tabindex="1"
-					autocomplete="on"
-				/>
+				<el-input ref="username" v-model="loginForm.username" placeholder="请输入用户名" name="username" type="text"
+					tabindex="1" autocomplete="on" />
 			</el-form-item>
 
-			<el-tooltip
-				v-model="capsTooltip"
-				content="Caps lock is On"
-				placement="right"
-				manual
-			>
+			<el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
 				<el-form-item prop="password">
 					<span class="icon-container">
 						<i class="iconfont icon-mima1"></i>
 					</span>
-					<el-input
-						:type="isShowPwd ? 'text' : 'password'"
-						ref="password"
-						v-model="loginForm.password"
-						placeholder="请输入密码"
-						name="password"
-						tabindex="2"
-						autocomplete="on"
-					/>
+					<el-input :type="isShowPwd ? 'text' : 'password'" ref="password" v-model="loginForm.password"
+						placeholder="请输入密码" name="password" tabindex="2" autocomplete="on" />
 					<span class="show-pwd" @click="isShowPwd = !isShowPwd">
-						<i
-							:class="isShowPwd ? 'iconfont icon-eye' : 'iconfont icon-no_eye'"
-						></i>
+						<i :class="isShowPwd ? 'iconfont icon-eye' : 'iconfont icon-no_eye'"></i>
 					</span>
 				</el-form-item>
 			</el-tooltip>
 
-			<el-button
-				:loading="isLoading"
-				type="primary"
-				style="width: 100%; margin-bottom: 30px"
-				@click.native="handleLogin"
-				@keyup.enter.native="handleLogin"
-				>登录</el-button
-			>
-			<el-link :underline="false" class="noAccount" @click="createAccount"
-				>还没账号?去创建一个吧</el-link
-			>
+			<el-button :loading="isLoading" type="primary" style="width: 100%; margin-bottom: 30px"
+				@click.native="handleLogin" @keyup.enter.native="handleLogin">登录</el-button>
+			<el-link :underline="false" class="noAccount" @click="createAccount">还没账号?去创建一个吧</el-link>
 		</el-form>
 	</div>
 </template>
 
 <script>
 import auth from "@/api/login/auth";
+import timeline from '@/utils/timeline'
 
 export default {
 	name: "Login",
@@ -146,8 +113,9 @@ export default {
 			this.$refs.password.focus();
 		}
 	},
-	beforeRouteLeave(to, from, next) {
+	async beforeRouteLeave(to, from, next) {
 		if (to.name == "index") {
+			localStorage.setItem('username', this.loginForm.username)
 			const record = {
 				operator: this.loginForm.username,
 				message: "登录了后台管理系统",
@@ -155,15 +123,19 @@ export default {
 					Date.now()
 				).format("HH : mm : ss")}`,
 			};
-			this.$store.commit("timeline/ADDRECORD", record);
-			const origin = localStorage.getItem("records");
-			if (origin) {
-				const oriRecords = JSON.parse(origin);
-				const nowRecords = JSON.stringify([...oriRecords, record]);
-				localStorage.setItem("records", nowRecords);
-			} else {
-				const striRecord = JSON.stringify([record]);
-				localStorage.setItem("records", striRecord);
+			const { data } = await timeline({
+				method: 'POST',
+				url: '/timeline',
+				data: {
+					username: this.loginForm.username,
+					timeline: record
+				}
+			})
+			if(!data.ok) {
+				this.$message({
+					type: 'error',
+					message: 'Invalid Error'
+				})
 			}
 		}
 		next();

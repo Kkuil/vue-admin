@@ -28,13 +28,13 @@
 </template>
 <script>
 import authToken from "@/utils/authToken";
+import timeline from "@/utils/timeline";
 
 import WelcomeMask from "@/components/WelcomeMask/index";
 import SideBar from "@/components/SideBar/index";
 import TopMenu from "@/components/TopMenu/index";
 import BreadCrumb from "@/components/BreadCrumb/index";
 import Drawer from "@/layout/index";
-import weather from '@/store/modules/weather';
 export default {
 	name: "user",
 	data() {
@@ -92,9 +92,8 @@ export default {
 					});
 				} else {
 					// 验证token
-					debugger;
-					const { data } = await authToken();
-					if (!data.ok) {
+					const { data: { ok, userInfo } } = await authToken();
+					if (!ok) {
 						this.$message({
 							type: "error",
 							showClose: true,
@@ -106,26 +105,28 @@ export default {
 							},
 						});
 					} else {
-						this.userInfo = data.userInfo;
-						this.$bus.$emit('userInfo', data.userInfo)
+						this.userInfo = userInfo;
 						// 记录操作记录
 						const record = {
-							operator: data.userInfo.username,
+							operator: userInfo.username,
 							message: `查看了${route.name}的信息`,
 							time: `${this.$moment(Date.now()).format(
 								"YYYY/MM/DD"
 							)} ${this.$moment(Date.now()).format("HH : mm : ss")}`,
 						};
-						this.$store.commit("timeline/ADDRECORD", record);
-						// 本地存储
-						const origin = localStorage.getItem("records");
-						if (origin) {
-							const oriRecords = JSON.parse(origin);
-							const nowRecords = JSON.stringify([...oriRecords, record]);
-							localStorage.setItem("records", nowRecords);
-						} else {
-							const striRecord = JSON.stringify([record]);
-							localStorage.setItem("records", striRecord);
+						const { data } = await timeline({
+							method: 'POST',
+							url: '/timeline',
+							data: {
+								username: userInfo.username,
+								timeline: record
+							}
+						})
+						if (!data.ok) {
+							this.$message({
+								type: 'error',
+								message: 'Invalid Error'
+							})
 						}
 					}
 				}

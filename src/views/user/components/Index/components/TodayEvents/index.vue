@@ -348,14 +348,9 @@ export default {
 			},
 		},
 	},
-	async mounted() {
+	mounted() {
 		// 获取用户名
-		this.$bus.$on("userInfo", (userInfo) => {
-			const { username } = userInfo;
-			this.username = username;
-			// 获取事件
-			this.getEvents(username);
-		});
+		this.username = localStorage.getItem('username')
 	},
 };
 </script>

@@ -7,12 +7,8 @@
 		</div>
 		<div class="time_line" v-loading.lock="isRefresh">
 			<el-timeline v-show="records.length">
-				<el-timeline-item
-					v-for="(record, index) in records"
-					:key="index"
-					:timestamp="record.time"
-					placement="top"
-				>
+				<el-timeline-item v-for="(record, index) in records" :key="index" :timestamp="record.time"
+					placement="top">
 					<el-card>
 						<h4>{{ record.message }}</h4>
 						<p>{{ record.operator }} 提交于 {{ record.time }}</p>
@@ -35,6 +31,7 @@
 </template>
 
 <script>
+import timeline from '@/utils/timeline'
 export default {
 	name: "Timeline",
 	data() {
@@ -59,13 +56,19 @@ export default {
 	},
 	methods: {
 		// 刷新纪录
-		refresh() {
+		async refresh() {
 			if (!this.isLock) {
 				this.isLock = true;
 				this.remainTime = 3;
 				this.isRefresh = true;
-				const records = localStorage.getItem("records");
-				if (records) this.records = JSON.parse(records);
+				const { data } = await timeline({
+					method: 'GET',
+					url: '/timeline',
+					params: {
+						username
+					}
+				})
+				if (data.ok) this.records = data.timeline;
 				setTimeout(() => {
 					this.isRefresh = false;
 				}, 1000);
@@ -81,41 +84,47 @@ export default {
 				});
 			}
 		},
-		goLoad() {
+		async goLoad() {
 			this.isNeedLoad = false;
 			this.isLoading = true;
 			const { records, totalLoadCount, needLoadCount } = this;
-			const localRecords = JSON.parse(localStorage.getItem("records"));
-			const curLoad = totalLoadCount - needLoadCount;
-			if (curLoad == 1) records.push(...localRecords.slice(needLoadCount * 10));
-			else
-				records.push(
-					...localRecords.slice(needLoadCount * 10, needLoadCount * 10 + 10)
-				);
-			setTimeout(() => {
-				this.isNeedLoad = true;
-				this.isLoading = false;
-			}, 1000);
+			console.log(totalLoadCount - needLoadCount)
+			const { data } = await timeline({
+				method: 'GET',
+				url: '/timeline',
+				params: {
+					username: localStorage.getItem('username'),
+					pageNo: totalLoadCount - needLoadCount + 1
+				}
+			});
+			console.log(data.timeline)
+			records.push(...data.timeline);
+			this.isNeedLoad = true;
+			this.isLoading = false;
 			this.$nextTick(function () {
 				--this.needLoadCount ? "" : (this.isNeedLoad = false);
 			});
 		},
 	},
-	mounted() {
-		const oriRecords = localStorage.getItem("records");
-		if (oriRecords) {
-			const records = JSON.parse(oriRecords);
-			if (records.length <= 10) this.records = records;
-			else {
+	async mounted() {
+		const { data } = await timeline({
+			method: 'GET',
+			url: '/timeline',
+			params: {
+				username: localStorage.getItem('username'),
+				pageNo: 1,
+			}
+		})
+		if (data.ok) {
+			const records = data.timeline;
+			if (data.sum_records > 10) {
 				// 记录还要加载多少次
-				this.needLoadCount = Math.ceil(records.length / 10) - 1;
+				this.needLoadCount = Math.ceil(data.sum_records / 10) - 1;
 				// 总次数
-				this.totalLoadCount = this.needLoadCount;
-				this.records = records.slice(0, 10);
+				this.totalLoadCount = this.needLoadCount + 1;
 				this.isNeedLoad = true;
 			}
-		} else {
-			this.records = this.$store.state.timeline.records;
+			this.records = records;
 		}
 	},
 	watch: {
@@ -133,6 +142,7 @@ export default {
 	width: 100%;
 	height: auto !important;
 	margin-bottom: 20px !important;
+
 	.title {
 		position: relative;
 		width: 100%;
@@ -143,10 +153,12 @@ export default {
 		border-left: 2px solid #eee;
 		border-right: 2px solid #eee;
 		align-items: center;
+
 		.icon-record {
 			font-size: 25px;
 			margin: 0 8px;
 		}
+
 		.icon-refresh {
 			cursor: pointer;
 			position: absolute;
@@ -155,11 +167,13 @@ export default {
 			right: 2%;
 			transform: translateY(-50%);
 			transition: all 0.3s;
+
 			&:hover {
 				color: #0094ff;
 			}
 		}
 	}
+
 	.time_line {
 		position: relative;
 		width: 100%;
@@ -168,9 +182,11 @@ export default {
 		border-left: 2px solid #eee;
 		border-right: 2px solid #eee;
 		border-bottom: 2px solid #eee;
+
 		.el-timeline {
 			padding: 0;
 		}
+
 		.no_records {
 			width: 100%;
 			height: auto;
@@ -179,6 +195,7 @@ export default {
 			align-items: center;
 			color: #ccc;
 		}
+
 		.goLoad {
 			cursor: pointer;
 			position: absolute;
@@ -194,16 +211,20 @@ export default {
 			transition: all 0.3s;
 			box-shadow: 0 3px 10px 5px #eee;
 			background-color: #fff;
+
 			i {
 				margin-right: 10px;
 			}
+
 			&:hover {
 				color: #0094ff;
 			}
 		}
+
 		.loading {
 			cursor: default;
 			position: sticky;
+
 			&:hover {
 				color: #ccc;
 			}
