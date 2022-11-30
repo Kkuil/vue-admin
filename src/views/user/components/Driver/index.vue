@@ -86,13 +86,7 @@ export default {
 	width: 100%;
 	height: 100%;
 
-	.el-header,
-	.el-footer {
-		background-color: #B3C0D1;
-		color: #333;
-		text-align: center;
-		line-height: 60px;
-	}
+
 
 	.el-aside {
 		background-color: #D3DCE6;
@@ -103,16 +97,28 @@ export default {
 		align-items: center;
 	}
 
-	.el-main {
-		background-color: #E9EEF3;
-		color: #333;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
+
 
 	.el-container {
 		height: 100%;
+
+		.el-main {
+			background-color: #E9EEF3;
+			color: #333;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.el-header,
+		.el-footer {
+			background-color: #B3C0D1;
+			color: #333;
+			text-align: center;
+			line-height: 60px;
+			width: 100%;
+			height: 60px;
+		}
 	}
 }
 </style>

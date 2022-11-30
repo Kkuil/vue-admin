@@ -68,7 +68,7 @@ export default {
 	}
 	.news {
 		position: relative;
-		width: calc(100% + 31px);
+		width: calc(100% + 30px);
 		height: 100%;
 		overflow: auto;
 		.digest {

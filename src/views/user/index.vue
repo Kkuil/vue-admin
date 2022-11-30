@@ -170,7 +170,7 @@ export default {
 <style scoped lang="scss">
 #user {
 	position: relative;
-	height: 100vh;
+	height: 100%;
 	overflow: hidden;
 
 	.el-header {
@@ -186,6 +186,7 @@ export default {
 		max-width: 185px !important;
 		height: 100%;
 		padding: 0;
+		margin: 0;
 		color: #333;
 		text-align: center;
 		background-color: rgba(243, 250, 252, 0.3);
@@ -195,10 +196,11 @@ export default {
 		padding: 0px;
 		transition: all 0.3s;
 		width: calc(100% + 16px);
+		height: 100%;
 		overflow-x: hidden;
 
 		.main_content {
-			padding: 20px 25px 0;
+			padding: 20px 25px 20px;
 			width: 100%;
 			height: 100%;
 			display: flex;

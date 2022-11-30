@@ -118,7 +118,7 @@ export default {
 				const { username, tags } = this.userInfo;
 				const { data } = await getTags({
 					method: "POST",
-					url: "/update",
+					url: "/tags",
 					data: {
 						username,
 						tags,
@@ -172,7 +172,7 @@ export default {
 				const { username, tags } = this.userInfo;
 				const { data } = await postTags({
 					method: "POST",
-					url: "/update",
+					url: "/updateInfo",
 					data: {
 						username,
 						tags,
@@ -192,7 +192,7 @@ export default {
 			const { username } = this.userInfo;
 			const { data } = await postComments({
 				method: "POST",
-				url: "/update",
+				url: "/updateInfo",
 				data: {
 					username,
 					comments: e.target.value,
@@ -219,10 +219,10 @@ export default {
 			// 更新数据库图片地址
 			const data2 = await postBgi({
 				method: "POST",
-				url: "/update",
+				url: "/updateInfo",
 				data: {
 					username: this.userInfo.username,
-					index_bgi: this.userInfo.index_bgi,
+					index_bgi: `http://127.0.0.1:3000/index_bgi/${filename}`,
 				},
 			});
 			this.$nextTick(function () {
