@@ -350,7 +350,9 @@ export default {
 	},
 	mounted() {
 		// 获取用户名
-		this.username = localStorage.getItem('username')
+		const username = localStorage.getItem('username')
+		this.username = username
+		this.getEvents(username)
 	},
 };
 </script>

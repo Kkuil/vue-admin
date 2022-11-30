@@ -106,6 +106,9 @@ export default {
 						});
 					} else {
 						this.userInfo = userInfo;
+						//传递userInfo
+						this.$bus.$emit('userInfo', userInfo)
+						localStorage.setItem('avatar', userInfo.avatar)
 						// 记录操作记录
 						const record = {
 							operator: userInfo.username,
@@ -167,7 +170,7 @@ export default {
 <style scoped lang="scss">
 #user {
 	position: relative;
-	height: 100%;
+	height: 100vh;
 	overflow: hidden;
 
 	.el-header {

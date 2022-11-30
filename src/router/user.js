@@ -19,9 +19,9 @@ module.exports = {
             }
         },
         {
-            name: 'documentation',
-            path: 'documentation',
-            component: () => import('@/views/user/components/Documentation'),
+            name: 'driver',
+            path: 'driver',
+            component: () => import('@/views/user/components/Driver'),
             meta: {
                 index: 1
             }

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3753550 */
-  src: url('//at.alicdn.com/t/c/font_3753550_6ut714wk7k3.woff2?t=1669684502691') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3753550_6ut714wk7k3.woff?t=1669684502691') format('woff'),
-       url('//at.alicdn.com/t/c/font_3753550_6ut714wk7k3.ttf?t=1669684502691') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3753550_21rp89ofkjh.woff2?t=1669725533870') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3753550_21rp89ofkjh.woff?t=1669725533870') format('woff'),
+       url('//at.alicdn.com/t/c/font_3753550_21rp89ofkjh.ttf?t=1669725533870') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Star-Night:before {
+  content: "\ede7";
+}
+
+.icon-Daytimemode:before {
+  content: "\e771";
 }
 
 .icon-java:before {

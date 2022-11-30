@@ -38,10 +38,10 @@
 				<span slot="title">Index</span>
 			</el-menu-item>
 			<el-menu-item :class="
-				currentRoute == 'documentation' ? 'is-active active' : 'clear_color'
-			" @click="changeRoute({ index: 1, route: 'documentation' })" index="2">
+				currentRoute == 'driver' ? 'is-active active' : 'clear_color'
+			" @click="changeRoute({ index: 1, route: 'driver' })" index="2">
 				<i class="el-icon-folder"></i>
-				<span slot="title">Documentation</span>
+				<span slot="title">Driver</span>
 			</el-menu-item>
 			<el-menu-item :class="currentRoute == 'guide' ? 'is-active active' : 'clear_color'"
 				@click="changeRoute({ index: 2, route: 'guide' })" index="3">

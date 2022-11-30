@@ -97,7 +97,6 @@ export default {
 					pageNo: totalLoadCount - needLoadCount + 1
 				}
 			});
-			console.log(data.timeline)
 			records.push(...data.timeline);
 			this.isNeedLoad = true;
 			this.isLoading = false;
