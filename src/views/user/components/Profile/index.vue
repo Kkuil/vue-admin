@@ -116,9 +116,9 @@ export default {
 			this.tags.splice(index, 1);
 			this.$nextTick(async function () {
 				const { username, tags } = this.userInfo;
-				const { data } = await getTags({
+				const { data } = await postTags({
 					method: "POST",
-					url: "/tags",
+					url: "/updateInfo",
 					data: {
 						username,
 						tags,
