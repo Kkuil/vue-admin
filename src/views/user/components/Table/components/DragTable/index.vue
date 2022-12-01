@@ -24,9 +24,9 @@
 						draggable="true"
 						:data-index="index"
 						:style="`color: ${
-							currentIndex == index ? '#0094ff' : ''
+							current_index == index ? '#0094ff' : ''
 						}; transition: all .3s; background-color: ${
-							hoverIndex == index ? '#0095ff79' : ''
+							hover_index == index ? '#0095ff79' : ''
 						};`"
 					>
 						<td>{{ row.Sid }}</td>
@@ -49,8 +49,8 @@ export default {
 	name: "DragTable",
 	data() {
 		return {
-			currentIndex: -1,
-			hoverIndex: -1,
+			current_index: -1,
+			hover_index: -1,
 			tableData: [
 				{
 					Sid: nanoid(),
@@ -148,19 +148,28 @@ export default {
 	mounted() {
 		const tbody = this.$refs.tbody;
 		tbody.ondragstart = (e) => {
-			this.currentIndex = e.target.dataset.index;
+			this.current_index = e.target.dataset.index;
 			e.dataTransfer.effectAllowed = "move";
+			this.$nextTick(function() {
+				e.target.style.color = 'transparent'
+			})
 		};
+
 		tbody.ondragover = (e) => {
 			e.preventDefault();
 		};
 		tbody.ondragenter = (e) => {
+			this.hover_index = e.target.parentNode.dataset.index
 			e.preventDefault();
 
 		};
 		tbody.ondragend = (e) => {
-			this.currentIndex = -1;
-			this.hoverIndex = -1;
+			// 保存一份
+			const temp = this.tableData[this.current_index]
+			this.tableData.splice(this.current_index, 1)
+			this.$nextTick(function() {
+				this.tableData.splice(this.hover_index, 0, temp)
+			})
 		};
 	},
 };
