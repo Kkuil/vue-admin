@@ -2,7 +2,7 @@
 	<div id="drag_table">
 		<div class="title">
 			<i class="iconfont icon-drag"></i>
-			<h2>Dragable Table</h2>
+			<h2>Draggable Table</h2>
 		</div>
 		<div class="table">
 			<table
